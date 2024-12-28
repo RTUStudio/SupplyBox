@@ -1,0 +1,6 @@
+Example:
+  enable: true
+  period: 1200
+  box: "Example"
+  profile: "Example_Region"
+

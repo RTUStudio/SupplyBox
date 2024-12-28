@@ -1,0 +1,9 @@
+region:
+  world: "world"
+  center:
+    x: 0
+    z: 0
+  radius: 100
+  # circle / square
+  type: "square"
+  amount: 2

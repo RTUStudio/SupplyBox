@@ -1,0 +1,6 @@
+location:
+  select: 3
+  list:
+    - "world,0,0,0"
+    - "world_nether,0,0,0"
+    - "world_the_end,0,0,0"

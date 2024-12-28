@@ -1,0 +1,20 @@
+displayName: "<gray>Example</gray>"
+
+alert:
+  minecraft: true
+  discord: false
+
+block: "chest"
+
+item:
+  box: "nexo:supply_box"
+  key: "nexo:supply_box_key"
+
+#Tick to unlock box
+time: 60
+
+# drop / inventory / give
+interact: "inventory"
+
+loot: "Example"
+
