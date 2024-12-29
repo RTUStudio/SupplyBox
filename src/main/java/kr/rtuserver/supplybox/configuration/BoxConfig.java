@@ -6,12 +6,14 @@ import kr.rtuserver.framework.bukkit.api.utility.platform.FileResource;
 import kr.rtuserver.supplybox.RSSupplyBox;
 import kr.rtuserver.supplybox.box.Box;
 import kr.rtuserver.supplybox.loot.Loot;
+import lombok.Getter;
 
 import java.io.File;
 import java.util.*;
 
 public class BoxConfig {
 
+    @Getter
     private final Map<String, Box> map = new HashMap<>();
     private final RSSupplyBox plugin;
 
@@ -22,10 +24,6 @@ public class BoxConfig {
 
     public Box get(String name) {
         return map.get(name);
-    }
-
-    public Collection<Box> values() {
-        return map.values();
     }
 
     public void reload() {

@@ -33,7 +33,7 @@ public class ItemInteractEvent extends RSListener<RSSupplyBox> {
         ItemStack item = e.getItem();
         if (item == null || item.getType().isAir()) return;
         Player player = e.getPlayer();
-        for (Box box : boxConfig.values()) {
+        for (Box box : boxConfig.getMap().values()) {
             ItemStack boxItem = ItemCompat.from(box.getItemBox());
             if (boxItem == null) continue;
             if (ItemCompat.isSimilar(e.getItem(), boxItem)) {
@@ -43,7 +43,6 @@ public class ItemInteractEvent extends RSListener<RSSupplyBox> {
                     process(e.getPlayer(), box);
                 } else {
                     ItemStack key = ItemCompat.from(box.getItemKey());
-                    player.sendMessage(key.toString());
                     if (player.getInventory().containsAtLeast(key, 1)) {
                         player.getInventory().removeItem(key);
 

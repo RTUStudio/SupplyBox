@@ -49,7 +49,6 @@ public class ScheduleManager {
     public void start() {
         for (String name : scheduleConfig.getMap().keySet()) {
             Schedule schedule = scheduleConfig.getMap().get(name);
-            System.out.println(schedule);
             if (!schedule.enable()) continue;
             int period = schedule.period();
             tasks.put(name, CraftScheduler.runTimerAsync(plugin, () -> {

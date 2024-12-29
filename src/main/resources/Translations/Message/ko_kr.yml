@@ -1,5 +1,6 @@
-noFound:
-  box: "<red>상자 이름이 잘못되었습니다</red>"
+notFound:
+  box: "<red>존재하지 않는 상자입니다</red>"
+  profile: "<red>존재하지 않는 프로필입니다</red>"
 box:
   spawn: "<white>랜덤 박스 [display]이(가) <gray>[world] [x],[z]</gray>에 생성되었습니다!</white>"
   noKey: "<red>랜덤 박스를 열 수 있는 키를 가지고 있지 않습니다</red>"

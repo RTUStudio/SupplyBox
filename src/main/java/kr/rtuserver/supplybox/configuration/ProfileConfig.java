@@ -9,6 +9,7 @@ import kr.rtuserver.supplybox.data.WorldCoordinate;
 import kr.rtuserver.supplybox.profile.LocationProfile;
 import kr.rtuserver.supplybox.profile.Profile;
 import kr.rtuserver.supplybox.profile.RegionProfile;
+import lombok.Getter;
 import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 public class ProfileConfig {
 
+    @Getter
     private final Map<String, Profile> map = new HashMap<>();
     private final RSSupplyBox plugin;
 

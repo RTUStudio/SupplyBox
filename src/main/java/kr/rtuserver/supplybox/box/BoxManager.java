@@ -87,7 +87,7 @@ public class BoxManager {
                     case CIRCLE -> {
                         for (int i = 0; i < amount; i++) {
                             double a = Math.random() * 2 * Math.PI;
-                            double r = 100 * Math.sqrt(Math.random());
+                            double r = rProfile.getRadius() * Math.sqrt(Math.random());
                             int x = (int) Math.round(r * Math.cos(a));
                             int z = (int) Math.round(r * Math.sin(a));
                             result.add(new WorldCoordinate(rProfile.getWorld(), new BlockCoordinate(x + rProfile.getCenterX(), null, z + rProfile.getCenterZ())));
