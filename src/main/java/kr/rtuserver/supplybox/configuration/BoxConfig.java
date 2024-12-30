@@ -9,7 +9,9 @@ import kr.rtuserver.supplybox.loot.Loot;
 import lombok.Getter;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BoxConfig {
 
@@ -40,7 +42,7 @@ public class BoxConfig {
     }
 
 
-    class Config extends RSConfiguration <RSSupplyBox>{
+    class Config extends RSConfiguration<RSSupplyBox> {
 
         private final String name;
 

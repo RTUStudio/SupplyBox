@@ -1,6 +1,5 @@
 package kr.rtuserver.supplybox.box;
 
-import kr.rtuserver.framework.bukkit.api.RSPlugin;
 import kr.rtuserver.framework.bukkit.api.inventory.RSInventory;
 import kr.rtuserver.framework.bukkit.api.utility.format.ComponentFormatter;
 import kr.rtuserver.framework.bukkit.api.utility.platform.MinecraftVersion;

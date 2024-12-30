@@ -1,6 +1,5 @@
 package kr.rtuserver.supplybox.configuration;
 
-import kr.rtuserver.framework.bukkit.api.RSPlugin;
 import kr.rtuserver.framework.bukkit.api.config.RSConfiguration;
 import kr.rtuserver.supplybox.RSSupplyBox;
 import kr.rtuserver.supplybox.data.BlockCoordinate;

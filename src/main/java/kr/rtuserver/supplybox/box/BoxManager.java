@@ -125,12 +125,12 @@ public class BoxManager {
         PlayerChat chat = PlayerChat.of(plugin);
         for (Player player : Bukkit.getOnlinePlayers()) {
             String message = translation.get(player, "box.spawn")
-                    .replace("[display]", box.getDisplay())
-                    .replace("[name]", box.getName())
-                    .replace("[world]", pos.world())
-                    .replace("[x]", String.valueOf(pos.pos().x()))
-                    .replace("[y]", String.valueOf(pos.pos().y()))
-                    .replace("[z]", String.valueOf(pos.pos().z()));
+                    .replace("{display}", box.getDisplay())
+                    .replace("{name}", box.getName())
+                    .replace("{world}", pos.world())
+                    .replace("{x}", String.valueOf(pos.pos().x()))
+                    .replace("{y}", String.valueOf(pos.pos().y()))
+                    .replace("{z}", String.valueOf(pos.pos().z()));
             chat.announce(player, message);
         }
     }
