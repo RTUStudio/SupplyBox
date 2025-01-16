@@ -63,7 +63,6 @@ public class BoxConfig {
             box.setItemBox(itemBox);
             String itemKey = getString("item.key", "");
             box.setItemKey(itemKey);
-            box.setTime(getInt("time", box.getTime()));
             String intercatStr = getString("interact", "drop").toUpperCase();
             if (!List.of("DROP", "INVENTORY", "GIVE").contains(intercatStr)) intercatStr = "DROP";
             box.setInteract(Box.Interact.valueOf(intercatStr));

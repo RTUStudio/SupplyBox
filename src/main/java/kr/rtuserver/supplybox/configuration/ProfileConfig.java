@@ -9,8 +9,8 @@ import kr.rtuserver.supplybox.data.WorldCoordinate;
 import kr.rtuserver.supplybox.profile.LocationProfile;
 import kr.rtuserver.supplybox.profile.Profile;
 import kr.rtuserver.supplybox.profile.RegionProfile;
+import kr.rtuserver.yaml.configuration.ConfigurationSection;
 import lombok.Getter;
-import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.util.ArrayList;

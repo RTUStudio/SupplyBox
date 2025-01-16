@@ -1,1 +1,4 @@
-spawn: "스폰"
+spawn:
+  name: "스폰"
+  description: "랜덤박스를 스폰합니다"
+  usage: "/rssb 스폰 [상자] [프로필]"

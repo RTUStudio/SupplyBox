@@ -2,7 +2,7 @@ package kr.rtuserver.supplybox;
 
 import kr.rtuserver.framework.bukkit.api.RSPlugin;
 import kr.rtuserver.supplybox.box.BoxManager;
-import kr.rtuserver.supplybox.commands.Command;
+import kr.rtuserver.supplybox.commands.MainCommand;
 import kr.rtuserver.supplybox.configuration.*;
 import kr.rtuserver.supplybox.listeners.BoxInteractEvent;
 import kr.rtuserver.supplybox.listeners.ChunkLoadEvent;
@@ -41,7 +41,7 @@ public class RSSupplyBox extends RSPlugin {
         registerEvent(new BoxInteractEvent(this));
         registerEvent(new ItemInteractEvent(this));
 
-        registerCommand(new Command(this));
+        registerCommand(new MainCommand(this), true);
 
         scheduleManager.start();
     }

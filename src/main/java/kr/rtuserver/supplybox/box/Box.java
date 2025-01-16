@@ -20,8 +20,6 @@ public class Box {
     private String itemKey = "";
     private String itemBox = "";
 
-    private int time = 60;
-
     private Interact interact = Interact.DROP;
 
     private Loot loot;

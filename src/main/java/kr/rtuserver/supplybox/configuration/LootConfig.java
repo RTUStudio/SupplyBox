@@ -5,7 +5,7 @@ import kr.rtuserver.framework.bukkit.api.config.RSConfiguration;
 import kr.rtuserver.framework.bukkit.api.utility.platform.FileResource;
 import kr.rtuserver.supplybox.RSSupplyBox;
 import kr.rtuserver.supplybox.loot.Loot;
-import org.simpleyaml.configuration.ConfigurationSection;
+import kr.rtuserver.yaml.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.util.HashMap;
