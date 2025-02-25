@@ -1,5 +1,7 @@
 Example:
   enable: true
+  # period (tick)
+  # 주기 (틱)
   period: 1200
   box: "Example"
   profile: "Example_Region"

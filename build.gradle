@@ -80,7 +80,7 @@ dependencies {
     compileOnly "org.projectlombok:lombok:1.18.36"
     annotationProcessor "org.projectlombok:lombok:1.18.36"
 
-    implementation 'com.jeff-media:custom-block-data:2.2.3'
+    implementation 'com.jeff-media:custom-block-data:2.2.4'
 }
 
 jar {

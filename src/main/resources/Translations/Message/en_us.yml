@@ -2,5 +2,5 @@ notFound:
   box: "<red>This box does not exist</red>"
   profile: "<red>This profile does not exist</red>"
 box:
-  spawn: "<white>Random box {display} has been spawned at <gray>{world} {x},{z}</gray>!</white>"
+  spawn: "<white>Random box [display] has been spawned at <gray>[world] [x],[z]</gray>!</white>"
   noKey: "<red>You don't have a key to open the random box</red>"
