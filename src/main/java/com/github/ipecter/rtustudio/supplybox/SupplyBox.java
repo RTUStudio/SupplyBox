@@ -15,12 +15,13 @@ import lombok.Getter;
 @Getter
 public class SupplyBox extends RSPlugin {
 
-    private BoxConfig boxConfig;
-    private DiscordConfig discordConfig;
     private LootConfig lootConfig;
+    private BoxConfig boxConfig;
     private ProfileConfig profileConfig;
-    private QueueConfig queueConfig;
     private ScheduleConfig scheduleConfig;
+
+    private DiscordConfig discordConfig;
+    private QueueConfig queueConfig;
 
     private BoxManager boxManager;
     private LootManager lootManager;
@@ -31,12 +32,13 @@ public class SupplyBox extends RSPlugin {
     @Override
     protected void enable() {
 
-        boxConfig = new BoxConfig(this);
-        discordConfig = new DiscordConfig(this);
         lootConfig = new LootConfig(this);
+        boxConfig = new BoxConfig(this);
         profileConfig = new ProfileConfig(this);
-        queueConfig = new QueueConfig(this);
         scheduleConfig = new ScheduleConfig(this);
+
+        discordConfig = new DiscordConfig(this);
+        queueConfig = new QueueConfig(this);
 
         boxManager = new BoxManager(this);
         lootManager = new LootManager(this);
