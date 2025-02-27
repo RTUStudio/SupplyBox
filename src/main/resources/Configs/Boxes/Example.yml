@@ -4,14 +4,20 @@ alert:
   minecraft: true
   discord: false
 
-block: "chest"
+# nexo:id
+# itemsadder:namespace:id
+# oraxen:id
+# minecraft:block
+block: "minecraft:chest"
 
+# nexo:id
+# itemsadder:namespace:id
+# oraxen:id
+# mmoitems:category:id
+# minecraft:item
 item:
-  box: "nexo:supply_box"
-  key: "nexo:supply_box_key"
-
-#Tick to unlock box
-time: 60
+  box: "minecraft:box"
+  key: "minecraft:trial_key"
 
 # drop / inventory / give
 interact: "inventory"

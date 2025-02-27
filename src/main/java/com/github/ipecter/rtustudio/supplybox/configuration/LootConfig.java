@@ -58,7 +58,7 @@ public class LootConfig {
             if (section != null) {
                 for (String key : section.getKeys(false)) {
                     Loot.Item item = new Loot.Item(key);
-                    item.setWeight(getInt("items." + key + ".change", 100));
+                    item.setWeight(getInt("items." + key + ".weight", 100));
                     item.setMin(getInt("items." + key + ".min", 1));
                     item.setMax(getInt("items." + key + ".max", 64));
                     loot.addItem(item);
