@@ -16,7 +16,7 @@ block: "minecraft:chest"
 # mmoitems:category:id
 # minecraft:item
 item:
-  box: "minecraft:box"
+  box: "minecraft:chest"
   key: "minecraft:trial_key"
 
 # drop / inventory / give

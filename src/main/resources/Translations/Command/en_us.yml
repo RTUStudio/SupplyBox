@@ -1,4 +1,4 @@
 spawn:
   name: "spawn"
   description: "Spawn random box"
-  usage: "/rssb spawn [box] [profile]"
+  usage: "/supplybox spawn [box] [profile]"
