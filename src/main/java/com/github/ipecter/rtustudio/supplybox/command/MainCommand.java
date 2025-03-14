@@ -15,7 +15,6 @@ public class MainCommand extends RSCommand<SupplyBox> {
     private final ScheduleConfig scheduleConfig;
     private final QueueConfig queueConfig;
 
-    private final BoxManager boxManager;
     private final ScheduleManager scheduleManager;
 
     public MainCommand(SupplyBox plugin) {
@@ -25,7 +24,6 @@ public class MainCommand extends RSCommand<SupplyBox> {
         this.profileConfig = plugin.getProfileConfig();
         this.scheduleConfig = plugin.getScheduleConfig();
         this.queueConfig = plugin.getQueueConfig();
-        this.boxManager = plugin.getBoxManager();
         this.scheduleManager = plugin.getScheduleManager();
         registerCommand(new SpawnCommand(plugin));
     }
