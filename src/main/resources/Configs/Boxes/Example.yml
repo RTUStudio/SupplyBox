@@ -14,6 +14,7 @@ block: "minecraft:chest"
 # itemsadder:namespace:id
 # oraxen:id
 # mmoitems:category:id
+# ecoitems:id
 # minecraft:item
 item:
   box: "minecraft:chest"
