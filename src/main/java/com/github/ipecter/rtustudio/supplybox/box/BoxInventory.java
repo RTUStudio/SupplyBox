@@ -24,11 +24,6 @@ public class BoxInventory extends RSInventory<SupplyBox> {
         for (ItemStack stack : items) inventory.addItem(stack);
     }
 
-    private Inventory createInventory(int size, Component component) {
-        if (MinecraftVersion.isPaper()) return Bukkit.createInventory(this, size, component);
-        else return Bukkit.createInventory(this, size, ComponentFormatter.legacy(component));
-    }
-
     @Override
     public @NotNull Inventory getInventory() {
         return inventory;

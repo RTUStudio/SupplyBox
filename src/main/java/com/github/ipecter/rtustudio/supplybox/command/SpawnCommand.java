@@ -33,8 +33,8 @@ public class SpawnCommand extends RSCommand<SupplyBox> {
             Profile profile = profileConfig.get(data.args(2));
             if (profile != null) {
                 boxManager.spawn(box, profile);
-            } else getChat().announce(getSender(), getMessage().get(getPlayer(), "notFound.profile"));
-        } else getChat().announce(getSender(), getMessage().get(getPlayer(), "notFound.box"));
+            } else chat.announce(audience(), message.get(player(), "notFound.profile"));
+        } else chat.announce(audience(), message.get(player(), "notFound.box"));
         return true;
     }
 
