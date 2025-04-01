@@ -59,4 +59,5 @@ public class ScheduleManager {
     public void stop() {
         for (String name : tasks.keySet()) tasks.remove(name).cancel();
     }
+
 }

@@ -51,4 +51,5 @@ public class ChunkLoadEvent extends RSListener<SupplyBox> {
         }
         if (queue) queueConfig.save();
     }
+
 }

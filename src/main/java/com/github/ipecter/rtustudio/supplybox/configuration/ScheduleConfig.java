@@ -4,7 +4,7 @@ import com.github.ipecter.rtustudio.supplybox.SupplyBox;
 import com.github.ipecter.rtustudio.supplybox.box.Box;
 import com.github.ipecter.rtustudio.supplybox.profile.Profile;
 import com.github.ipecter.rtustudio.supplybox.schedule.Schedule;
-import kr.rtuserver.framework.bukkit.api.config.RSConfiguration;
+import kr.rtuserver.framework.bukkit.api.configuration.RSConfiguration;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -44,4 +44,5 @@ public class ScheduleConfig extends RSConfiguration<SupplyBox> {
             map.put(key, new Schedule(key, enable, period, box, profile));
         }
     }
+
 }

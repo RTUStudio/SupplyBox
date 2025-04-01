@@ -76,4 +76,5 @@ public class ItemInteractEvent extends RSListener<SupplyBox> {
             }
         }
     }
+
 }

@@ -9,7 +9,7 @@ import com.github.ipecter.rtustudio.supplybox.profile.LocationProfile;
 import com.github.ipecter.rtustudio.supplybox.profile.Profile;
 import com.github.ipecter.rtustudio.supplybox.profile.RegionProfile;
 import com.jeff_media.customblockdata.CustomBlockData;
-import kr.rtuserver.framework.bukkit.api.config.impl.TranslationConfiguration;
+import kr.rtuserver.framework.bukkit.api.configuration.impl.TranslationConfiguration;
 import kr.rtuserver.framework.bukkit.api.registry.CustomBlocks;
 import kr.rtuserver.framework.bukkit.api.scheduler.BukkitScheduler;
 import kr.rtuserver.framework.bukkit.api.utility.format.ComponentFormatter;
@@ -148,4 +148,5 @@ public class BoxManager {
                 .replace("[z]", String.valueOf(pos.pos().z()));
         plugin.getHooks().getDiscord().sendMessage(message);
     }
+
 }

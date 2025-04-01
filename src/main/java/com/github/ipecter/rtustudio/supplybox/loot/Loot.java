@@ -36,4 +36,5 @@ public class Loot {
         private int weight = 100;
 
     }
+
 }

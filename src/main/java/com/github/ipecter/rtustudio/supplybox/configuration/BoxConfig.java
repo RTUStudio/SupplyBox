@@ -4,7 +4,7 @@ import com.github.ipecter.rtustudio.supplybox.SupplyBox;
 import com.github.ipecter.rtustudio.supplybox.box.Box;
 import com.github.ipecter.rtustudio.supplybox.loot.Loot;
 import com.google.common.io.Files;
-import kr.rtuserver.framework.bukkit.api.config.RSConfiguration;
+import kr.rtuserver.framework.bukkit.api.configuration.RSConfiguration;
 import kr.rtuserver.framework.bukkit.api.utility.platform.FileResource;
 import lombok.Getter;
 
@@ -76,4 +76,5 @@ public class BoxConfig {
             map.put(name, box);
         }
     }
+
 }

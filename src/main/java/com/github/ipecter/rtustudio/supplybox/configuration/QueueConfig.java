@@ -2,7 +2,7 @@ package com.github.ipecter.rtustudio.supplybox.configuration;
 
 import com.github.ipecter.rtustudio.supplybox.SupplyBox;
 import com.github.ipecter.rtustudio.supplybox.data.BlockCoordinate;
-import kr.rtuserver.framework.bukkit.api.config.RSConfiguration;
+import kr.rtuserver.framework.bukkit.api.configuration.RSConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,4 +37,5 @@ public class QueueConfig extends RSConfiguration<SupplyBox> {
         queue.remove(world);
         set(world.toString() + "." + block, null);
     }
+
 }

@@ -19,4 +19,5 @@ public class LocationProfile extends Profile {
     public LocationProfile(String name) {
         super(name);
     }
+
 }

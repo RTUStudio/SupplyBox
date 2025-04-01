@@ -38,4 +38,5 @@ public class MainCommand extends RSCommand<SupplyBox> {
         queueConfig.reload();
         scheduleManager.start();
     }
+
 }

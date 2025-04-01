@@ -3,7 +3,7 @@ package com.github.ipecter.rtustudio.supplybox.configuration;
 import com.github.ipecter.rtustudio.supplybox.SupplyBox;
 import com.github.ipecter.rtustudio.supplybox.loot.Loot;
 import com.google.common.io.Files;
-import kr.rtuserver.framework.bukkit.api.config.RSConfiguration;
+import kr.rtuserver.framework.bukkit.api.configuration.RSConfiguration;
 import kr.rtuserver.framework.bukkit.api.utility.platform.FileResource;
 import kr.rtuserver.yaml.configuration.ConfigurationSection;
 
@@ -67,4 +67,5 @@ public class LootConfig {
             map.put(name, loot);
         }
     }
+
 }
