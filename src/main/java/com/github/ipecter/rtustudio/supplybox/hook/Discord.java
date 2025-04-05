@@ -13,7 +13,7 @@ public class Discord {
     private final DiscordConfig config;
 
     public Discord(SupplyBox plugin) {
-        this.hooked = plugin.getFramework().isEnabledDependency("Vault");
+        this.hooked = plugin.getFramework().isEnabledDependency("DiscordSRV");
         if (hooked) {
             api = DiscordSRV.getPlugin();
         } else api = null;

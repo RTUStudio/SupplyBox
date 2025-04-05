@@ -4,4 +4,4 @@ supplybox:
 spawn:
   name: "스폰"
   description: "랜덤박스를 스폰합니다"
-  usage: "/supplybox 스폰 [상자] [프로필]"
+  usage: "/랜덤박스 스폰 [상자] [프로필]"
