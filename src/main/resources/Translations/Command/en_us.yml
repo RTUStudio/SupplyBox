@@ -1,3 +1,6 @@
+supplybox:
+  name: "supplybox"
+
 spawn:
   name: "spawn"
   description: "Spawn random box"

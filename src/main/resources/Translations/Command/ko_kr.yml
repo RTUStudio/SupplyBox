@@ -1,3 +1,6 @@
+supplybox:
+  name: "랜덤박스"
+
 spawn:
   name: "스폰"
   description: "랜덤박스를 스폰합니다"
