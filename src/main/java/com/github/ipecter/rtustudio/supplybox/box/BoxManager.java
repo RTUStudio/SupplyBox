@@ -9,11 +9,11 @@ import com.github.ipecter.rtustudio.supplybox.profile.LocationProfile;
 import com.github.ipecter.rtustudio.supplybox.profile.Profile;
 import com.github.ipecter.rtustudio.supplybox.profile.RegionProfile;
 import com.jeff_media.customblockdata.CustomBlockData;
-import kr.rtuserver.framework.bukkit.api.configuration.impl.TranslationConfiguration;
+import kr.rtuserver.framework.bukkit.api.configuration.translation.TranslationConfiguration;
+import kr.rtuserver.framework.bukkit.api.format.ComponentFormatter;
+import kr.rtuserver.framework.bukkit.api.player.PlayerChat;
 import kr.rtuserver.framework.bukkit.api.registry.CustomBlocks;
-import kr.rtuserver.framework.bukkit.api.scheduler.BukkitScheduler;
-import kr.rtuserver.framework.bukkit.api.utility.format.ComponentFormatter;
-import kr.rtuserver.framework.bukkit.api.utility.player.PlayerChat;
+import kr.rtuserver.framework.bukkit.api.scheduler.CraftScheduler;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -118,7 +118,7 @@ public class BoxManager {
         if (blockData == null) blockData = Material.CHEST.createBlockData();
         if (Bukkit.getWorld(loc.getWorld().getUID()) == null) return;
         BlockData copy = blockData;
-        BukkitScheduler.run(plugin, () -> {
+        CraftScheduler.run(plugin, () -> {
             Block block = loc.getWorld().getBlockAt(loc);
             block.setBlockData(copy);
             PersistentDataContainer pdc = new CustomBlockData(block, plugin);

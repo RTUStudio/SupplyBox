@@ -1,11 +1,8 @@
 package com.github.ipecter.rtustudio.supplybox.box;
 
 import com.github.ipecter.rtustudio.supplybox.SupplyBox;
+import kr.rtuserver.framework.bukkit.api.format.ComponentFormatter;
 import kr.rtuserver.framework.bukkit.api.inventory.RSInventory;
-import kr.rtuserver.framework.bukkit.api.utility.format.ComponentFormatter;
-import kr.rtuserver.framework.bukkit.api.utility.platform.MinecraftVersion;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -30,7 +27,7 @@ public class BoxInventory extends RSInventory<SupplyBox> {
     }
 
     @Override
-    public void onClose(Event<InventoryCloseEvent> event, Close close) {
+    public void onClose(Event<InventoryCloseEvent> event) {
         for (ItemStack itemStack : inventory.getContents()) {
             if (itemStack == null || itemStack.getType().isAir()) continue;
             event.player().getWorld().dropItemNaturally(event.player().getLocation(), itemStack);

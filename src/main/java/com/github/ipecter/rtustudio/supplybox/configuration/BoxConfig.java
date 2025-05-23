@@ -5,7 +5,7 @@ import com.github.ipecter.rtustudio.supplybox.box.Box;
 import com.github.ipecter.rtustudio.supplybox.loot.Loot;
 import com.google.common.io.Files;
 import kr.rtuserver.framework.bukkit.api.configuration.RSConfiguration;
-import kr.rtuserver.framework.bukkit.api.utility.platform.FileResource;
+import kr.rtuserver.framework.bukkit.api.platform.FileResource;
 import lombok.Getter;
 
 import java.io.File;

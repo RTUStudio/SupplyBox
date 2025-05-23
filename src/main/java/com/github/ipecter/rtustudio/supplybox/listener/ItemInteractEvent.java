@@ -7,7 +7,6 @@ import com.github.ipecter.rtustudio.supplybox.configuration.BoxConfig;
 import com.github.ipecter.rtustudio.supplybox.loot.LootManager;
 import kr.rtuserver.framework.bukkit.api.listener.RSListener;
 import kr.rtuserver.framework.bukkit.api.registry.CustomItems;
-import kr.rtuserver.framework.bukkit.api.utility.player.PlayerChat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -48,9 +47,7 @@ public class ItemInteractEvent extends RSListener<SupplyBox> {
 
                         player.getInventory().removeItem(boxItem);
                         process(e.getPlayer(), box);
-                    } else {
-                        PlayerChat.of(getPlugin()).announce(player, getMessage().get(player, "box.noKey"));
-                    }
+                    } else chat().announce(player, getMessage().get(player, "box.noKey"));
                     return;
                 }
             }

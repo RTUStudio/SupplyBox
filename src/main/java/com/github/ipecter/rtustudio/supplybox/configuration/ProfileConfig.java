@@ -8,8 +8,8 @@ import com.github.ipecter.rtustudio.supplybox.profile.Profile;
 import com.github.ipecter.rtustudio.supplybox.profile.RegionProfile;
 import com.google.common.io.Files;
 import kr.rtuserver.framework.bukkit.api.configuration.RSConfiguration;
-import kr.rtuserver.framework.bukkit.api.utility.platform.FileResource;
-import kr.rtuserver.yaml.configuration.ConfigurationSection;
+import kr.rtuserver.framework.bukkit.api.platform.FileResource;
+import kr.rtuserver.framework.yaml.configuration.ConfigurationSection;
 import lombok.Getter;
 
 import java.io.File;

@@ -9,7 +9,6 @@ import com.jeff_media.customblockdata.CustomBlockData;
 import kr.rtuserver.framework.bukkit.api.listener.RSListener;
 import kr.rtuserver.framework.bukkit.api.registry.CustomBlocks;
 import kr.rtuserver.framework.bukkit.api.registry.CustomItems;
-import kr.rtuserver.framework.bukkit.api.utility.player.PlayerChat;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -54,7 +53,7 @@ public class BoxInteractEvent extends RSListener<SupplyBox> {
             if (player.getInventory().containsAtLeast(key, 1)) {
                 player.getInventory().removeItem(key);
                 process(e.getPlayer(), block, box);
-            } else PlayerChat.of(getPlugin()).announce(player, getMessage().get(player, "box.noKey"));
+            } else chat().announce(player, getMessage().get(player, "box.noKey"));
         }
     }
 

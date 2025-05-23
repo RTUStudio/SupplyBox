@@ -4,8 +4,8 @@ import com.github.ipecter.rtustudio.supplybox.SupplyBox;
 import com.github.ipecter.rtustudio.supplybox.loot.Loot;
 import com.google.common.io.Files;
 import kr.rtuserver.framework.bukkit.api.configuration.RSConfiguration;
-import kr.rtuserver.framework.bukkit.api.utility.platform.FileResource;
-import kr.rtuserver.yaml.configuration.ConfigurationSection;
+import kr.rtuserver.framework.bukkit.api.platform.FileResource;
+import kr.rtuserver.framework.yaml.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.util.HashMap;
