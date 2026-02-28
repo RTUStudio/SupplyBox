@@ -10,11 +10,13 @@ select:
 # ecoitems:id
 # minecraft:item
 items:
-  minecraft:stone:
+  stone:
+    item: "minecraft:stone"
     min: 2
     max: 2
     weight: 50
-  minecraft:dirt:
+  dirt:
+    item: "minecraft:dirt"
     min: 1
     max: 32
     weight: 100
