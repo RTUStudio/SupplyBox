@@ -97,6 +97,7 @@ tasks.jar {
 tasks.shadowJar {
     archiveClassifier.set("")
     archiveBaseName.set(rootProject.name)
+    relocate("com.jeff_media.customblockdata", "kr.rtustudio.supplybox.customblockdata")
     doLast {
         copy {
             from(archiveFile.get().asFile)

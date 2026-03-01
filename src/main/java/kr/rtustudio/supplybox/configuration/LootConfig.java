@@ -60,20 +60,39 @@ public class LootConfig {
             loot.setSelectMax(getInt("select.max", 2, """
                     Maximum number of items to select
                     선택 최대 아이템 수"""));
-            for (String key : keys("items")) {
-                String path = "items." + key;
-                String itemId = getString(path + ".item", "", """
-                        Item identifier (e.g. minecraft:stone, nexo:id)
-                        아이템 식별자""");
-                if (itemId.isEmpty()) continue;
-                Loot.Item item = new Loot.Item(itemId);
-                item.setWeight(getInt(path + ".weight", 100, """
+            
+            if (getConfig().node("items").virtual() || getConfig().node("items").childrenMap().isEmpty()) {
+                addDefault("items.minecraft:stone.weight", 50, """
+                        Weighted chance (higher = more likely)
+                        가중치 (높을수록 확률 증가)""");
+                addDefault("items.minecraft:stone.min", 2, """
+                        Minimum amount
+                        최소 수량""");
+                addDefault("items.minecraft:stone.max", 2, """
+                        Maximum amount
+                        최대 수량""");
+                addDefault("items.minecraft:dirt.weight", 100, """
+                        Weighted chance (higher = more likely)
+                        가중치 (높을수록 확률 증가)""");
+                addDefault("items.minecraft:dirt.min", 1, """
+                        Minimum amount
+                        최소 수량""");
+                addDefault("items.minecraft:dirt.max", 32, """
+                        Maximum amount
+                        최대 수량""");
+            }
+            
+            var itemKeys = getConfig().node("items").childrenMap().keySet();
+            for (Object obj : itemKeys) {
+                String key = String.valueOf(obj);
+                Loot.Item item = new Loot.Item(key);
+                item.setWeight(getInt("items." + key + ".weight", 100, """
                         Weighted chance (higher = more likely)
                         가중치 (높을수록 확률 증가)"""));
-                item.setMin(getInt(path + ".min", 1, """
+                item.setMin(getInt("items." + key + ".min", 1, """
                         Minimum amount
                         최소 수량"""));
-                item.setMax(getInt(path + ".max", 64, """
+                item.setMax(getInt("items." + key + ".max", 64, """
                         Maximum amount
                         최대 수량"""));
                 loot.addItem(item);

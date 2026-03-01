@@ -15,6 +15,7 @@ public class LootManager {
 
     public List<ItemStack> getItems(Loot loot) {
         List<ItemStack> items = new ArrayList<>();
+        if (loot.getList().isEmpty()) return items;
         int select = random.nextInt(loot.getSelectMax() - loot.getSelectMin() + 1) + loot.getSelectMin();
         for (int i = 0; i < select; i++) {
             ItemStack itemStack = getItem(loot.getList());
@@ -25,12 +26,14 @@ public class LootManager {
     }
 
     public ItemStack getItem(List<Loot.Item> list) {
+        if (list.isEmpty()) return null;
         int totalWeight = 0;
         NavigableMap<Integer, Loot.Item> map = new TreeMap<>();
         for (Loot.Item item : list) {
             totalWeight += item.getWeight();
             map.put(totalWeight, item);
         }
+        if (totalWeight <= 0) return null;
 
         int rand = random.nextInt(totalWeight) + 1;
         Loot.Item item = map.ceilingEntry(rand).getValue();
