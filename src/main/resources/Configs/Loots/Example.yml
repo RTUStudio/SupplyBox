@@ -1,0 +1,20 @@
+# amount to select item
+# 선택할 아이템 수
+select:
+  min: 2
+  max: 2
+# nexo:id
+# itemsadder:namespace:id
+# oraxen:id
+# mmoitems:category:id
+# ecoitems:id
+# minecraft:item
+items:
+  minecraft:stone:
+    min: 2
+    max: 2
+    weight: 50
+  minecraft:dirt:
+    min: 1
+    max: 32
+    weight: 100

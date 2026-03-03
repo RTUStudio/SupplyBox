@@ -39,14 +39,13 @@ public class ItemInteractEvent extends RSListener<SupplyBox> {
             if (CustomItems.isSimilar(e.getItem(), boxItem)) {
                 e.setCancelled(true);
                 if (box.getItemKey().isEmpty()) {
-                    player.getInventory().remove(boxItem);
+                    item.setAmount(item.getAmount() - 1);
                     process(e.getPlayer(), box);
                 } else {
                     ItemStack key = CustomItems.from(box.getItemKey());
                     if (player.getInventory().containsAtLeast(key, 1)) {
                         player.getInventory().removeItem(key);
-
-                        player.getInventory().removeItem(boxItem);
+                        item.setAmount(item.getAmount() - 1);
                         process(e.getPlayer(), box);
                     } else chat().announce(player, getMessage().get(player, "box.noKey"));
                     return;

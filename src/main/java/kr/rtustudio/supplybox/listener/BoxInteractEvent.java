@@ -101,12 +101,13 @@ public class BoxInteractEvent extends RSListener<SupplyBox> {
     private Box getBox(Block block) {
         PersistentDataContainer pdc = new CustomBlockData(block, getPlugin());
         if (pdc.has(key, PersistentDataType.STRING)) {
-            Box box = new Box(pdc.get(key, PersistentDataType.STRING));
-            String target = CustomBlocks.to(block);
-            String boxBlock = box.getBlock().contains(":") ? box.getBlock() : "minecraft:" + box.getBlock();
-            if (boxBlock.equalsIgnoreCase(target)) {
-                return boxConfig.get(pdc.get(key, PersistentDataType.STRING));
-            } else pdc.remove(key);
+            String boxName = pdc.get(key, PersistentDataType.STRING);
+            Box box = boxConfig.get(boxName);
+            if (box == null) {
+                pdc.remove(key);
+                return null;
+            }
+            return box;
         }
         return null;
     }

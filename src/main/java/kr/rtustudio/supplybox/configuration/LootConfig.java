@@ -61,27 +61,6 @@ public class LootConfig {
                     Maximum number of items to select
                     선택 최대 아이템 수"""));
             
-            if (getConfig().node("items").virtual() || getConfig().node("items").childrenMap().isEmpty()) {
-                addDefault("items.minecraft:stone.weight", 50, """
-                        Weighted chance (higher = more likely)
-                        가중치 (높을수록 확률 증가)""");
-                addDefault("items.minecraft:stone.min", 2, """
-                        Minimum amount
-                        최소 수량""");
-                addDefault("items.minecraft:stone.max", 2, """
-                        Maximum amount
-                        최대 수량""");
-                addDefault("items.minecraft:dirt.weight", 100, """
-                        Weighted chance (higher = more likely)
-                        가중치 (높을수록 확률 증가)""");
-                addDefault("items.minecraft:dirt.min", 1, """
-                        Minimum amount
-                        최소 수량""");
-                addDefault("items.minecraft:dirt.max", 32, """
-                        Maximum amount
-                        최대 수량""");
-            }
-            
             var itemKeys = getConfig().node("items").childrenMap().keySet();
             for (Object obj : itemKeys) {
                 String key = String.valueOf(obj);

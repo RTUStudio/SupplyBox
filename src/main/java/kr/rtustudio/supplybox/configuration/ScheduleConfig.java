@@ -20,7 +20,7 @@ public class ScheduleConfig extends ConfigurationPart {
             Schedule list
             스케줄 목록. 키=스케줄 이름""")
     @Setting(nodeFromParent = true)
-    private Map<String, Entry> schedules = Map.of(
+    private Map<String, Entry> schedules = new LinkedHashMap<>(Map.of(
             "Example", new Entry(
                     false,
                     60,
@@ -28,13 +28,13 @@ public class ScheduleConfig extends ConfigurationPart {
                     "Example_Region",
                     true
             )
-    );
+    ));
 
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     @SuppressWarnings({"unused", "FieldMayBeFinal"})
-    public class Entry extends ConfigurationPart {
+    public static class Entry extends ConfigurationPart {
         @Comment("""
                 Whether the schedule is enabled
                 스케줄 활성화 여부""")

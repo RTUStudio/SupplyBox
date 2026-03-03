@@ -72,7 +72,8 @@ public class BoxManager {
             for (WorldCoordinate loc : locations) {
                 World world = Bukkit.getWorld(loc.world());
                 if (world == null) continue;
-                Location location = new Location(world, loc.pos().x(), 0, loc.pos().z());
+                int y = loc.pos().y() != null ? loc.pos().y() : 0;
+                Location location = new Location(world, loc.pos().x(), y, loc.pos().z());
                 if (location.getChunk().isLoaded()) {
                     if (loc.pos().y() == null) {
                         int highestY = world.getHighestBlockYAt(loc.pos().x(), loc.pos().z(), HeightMap.MOTION_BLOCKING_NO_LEAVES) + 1;
@@ -182,16 +183,21 @@ public class BoxManager {
     }
 
     private void alert(Box box, WorldCoordinate pos) {
-        PlayerChat chat = PlayerChat.of(plugin);
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            String message = formatMessage(translation.get(player, "box.spawn"), box, box.getDisplay(), pos);
-            chat.announce(player, message);
+        if (box.isAlertMinecraft()) {
+            PlayerChat chat = PlayerChat.of(plugin);
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                String message = formatMessage(translation.get(player, "box.spawn"), box, box.getDisplay(), pos);
+                chat.announce(player, message);
+            }
         }
-        DiscordConfig discordConfig = plugin.getConfiguration(DiscordConfig.class);
-        if (discordConfig != null && !discordConfig.getMessage().isEmpty()) {
-            String display = PlainTextComponentSerializer.plainText().serialize(ComponentFormatter.mini(box.getDisplay()));
-            String discordMessage = formatMessage(discordConfig.getMessage(), box, display, pos);
-            plugin.getDiscord().sendMessage(discordMessage);
+        
+        if (box.isAlertDiscord()) {
+            DiscordConfig discordConfig = plugin.getConfiguration(DiscordConfig.class);
+            if (discordConfig != null && !discordConfig.getMessage().isEmpty()) {
+                String display = PlainTextComponentSerializer.plainText().serialize(ComponentFormatter.mini(box.getDisplay()));
+                String discordMessage = formatMessage(discordConfig.getMessage(), box, display, pos);
+                plugin.getDiscord().sendMessage(discordMessage);
+            }
         }
     }
 
