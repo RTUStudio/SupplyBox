@@ -94,7 +94,7 @@ public class BoxInteractEvent extends RSListener<SupplyBox> {
         }
         block.setType(Material.AIR);
         if (scheduleName != null) {
-            getPlugin().getBoxManager().onBoxOpened(scheduleName);
+            getPlugin().getBoxManager().onBoxOpened(scheduleName, block.getLocation());
         }
     }
 

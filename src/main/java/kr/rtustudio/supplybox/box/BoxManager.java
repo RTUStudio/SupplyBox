@@ -41,8 +41,7 @@ public class BoxManager {
 
     private final TranslationConfiguration translation;
 
-    private final Map<String, AtomicInteger> activeBoxCounts = new ConcurrentHashMap<>();
-    private Consumer<String> allBoxesOpenedCallback;
+    private java.util.function.BiConsumer<String, Location> boxOpenedCallback;
 
     public BoxManager(SupplyBox plugin) {
         this.plugin = plugin;
@@ -52,8 +51,8 @@ public class BoxManager {
         this.translation = plugin.getConfiguration().getMessage();
     }
 
-    public void setAllBoxesOpenedCallback(Consumer<String> callback) {
-        this.allBoxesOpenedCallback = callback;
+    public void setBoxOpenedCallback(java.util.function.BiConsumer<String, Location> callback) {
+        this.boxOpenedCallback = callback;
     }
 
     public void spawn(Box box, Profile profile) {
@@ -63,10 +62,6 @@ public class BoxManager {
     public void spawn(Box box, Profile profile, String scheduleName) {
         getLocation(profile).thenAccept(locations -> {
             if (locations == null || locations.isEmpty()) return;
-            if (scheduleName != null) {
-                activeBoxCounts.computeIfAbsent(scheduleName, k -> new AtomicInteger(0))
-                        .addAndGet(locations.size());
-            }
             List<Location> result = new ArrayList<>();
             boolean queue = false;
             for (WorldCoordinate loc : locations) {
@@ -152,15 +147,10 @@ public class BoxManager {
         });
     }
 
-    public void onBoxOpened(String scheduleName) {
+    public void onBoxOpened(String scheduleName, Location loc) {
         if (scheduleName == null) return;
-        AtomicInteger count = activeBoxCounts.get(scheduleName);
-        if (count == null) return;
-        if (count.decrementAndGet() <= 0) {
-            activeBoxCounts.remove(scheduleName);
-            if (allBoxesOpenedCallback != null) {
-                allBoxesOpenedCallback.accept(scheduleName);
-            }
+        if (boxOpenedCallback != null) {
+            boxOpenedCallback.accept(scheduleName, loc);
         }
     }
 
@@ -169,7 +159,7 @@ public class BoxManager {
     }
 
     public void clearScheduleTracking() {
-        activeBoxCounts.clear();
+        // No-op as global tracking is removed
     }
 
     private String formatMessage(String template, Box box, String display, WorldCoordinate pos) {

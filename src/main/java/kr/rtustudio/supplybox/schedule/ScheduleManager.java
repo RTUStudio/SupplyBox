@@ -24,7 +24,7 @@ public class ScheduleManager {
     public ScheduleManager(SupplyBox plugin) {
         this.plugin = plugin;
         this.boxManager = plugin.getBoxManager();
-        this.boxManager.setAllBoxesOpenedCallback(this::onAllBoxesOpened);
+        this.boxManager.setBoxOpenedCallback(this::onBoxOpened);
     }
 
     public boolean add(String name) {
@@ -64,7 +64,7 @@ public class ScheduleManager {
 
     private void startSchedule(String name, Entry entry) {
         long delay = Math.max(1L, entry.getPeriod()) * 20L;
-        if (entry.isWaitForOpen()) {
+        if (entry.isDelayPerChest()) {
             ScheduledTask task = plugin.getFramework().getScheduler().delay(() -> {
                 tasks.remove(name);
                 executeSpawn(name, entry);
@@ -82,16 +82,22 @@ public class ScheduleManager {
         Box box = plugin.getBoxConfig().get(entry.getBox());
         Profile profile = plugin.getProfileConfig().get(entry.getProfile());
         if (box != null && box.isEnabled() && profile != null) {
-            boxManager.spawn(box, profile, entry.isWaitForOpen() ? name : null);
+            boxManager.spawn(box, profile, entry.isDelayPerChest() ? name : null);
         }
     }
 
-    private void onAllBoxesOpened(String scheduleName) {
-        if (!waitingForOpen.remove(scheduleName)) return;
+    private void onBoxOpened(String scheduleName, org.bukkit.Location loc) {
         ScheduleConfig scheduleConfig = plugin.getConfiguration(ScheduleConfig.class);
         if (scheduleConfig == null) return;
         Entry entry = scheduleConfig.getSchedules().get(scheduleName);
-        if (entry == null || !entry.isEnabled() || !entry.isWaitForOpen()) return;
-        startSchedule(scheduleName, entry);
+        if (entry == null || !entry.isEnabled() || !entry.isDelayPerChest()) return;
+
+        Box box = plugin.getBoxConfig().get(entry.getBox());
+        if (box == null || !box.isEnabled()) return;
+
+        long delay = Math.max(1L, entry.getPeriod()) * 20L;
+        plugin.getFramework().getScheduler().delay(() -> {
+            boxManager.setBlock(box, loc, scheduleName);
+        }, delay, true);
     }
 }

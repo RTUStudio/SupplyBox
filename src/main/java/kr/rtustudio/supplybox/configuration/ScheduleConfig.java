@@ -26,7 +26,7 @@ public class ScheduleConfig extends ConfigurationPart {
                     60,
                     "Example",
                     "Example_Region",
-                    true
+                    false
             )
     ));
 
@@ -52,8 +52,8 @@ public class ScheduleConfig extends ConfigurationPart {
                 사용할 프로필 이름""")
         private String profile = "";
         @Comment("""
-                Start next spawn timer after all boxes are opened (true: wait for all boxes to open, false: fixed period)
-                모든 상자가 열린 후에 다음 스폰 타이머 시작 (true: 모든 상자 열림 대기, false: 고정 주기)""")
-        private boolean waitForOpen = true;
+                Whether to delay respawn per chest (true: delay per chest, false: fixed period)
+                상자별로 스폰 지연을 적용할지 여부 (true: 상자별 지연, false: 고정 주기)""")
+        private boolean delayPerChest = false;
     }
 }
