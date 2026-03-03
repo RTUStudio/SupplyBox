@@ -22,7 +22,7 @@ public class MainCommand extends RSCommand<SupplyBox> {
         this.profileConfig = plugin.getProfileConfig();
         this.queueConfig = plugin.getQueueConfig();
         this.scheduleManager = plugin.getScheduleManager();
-        registerCommand(new SpawnCommand(plugin));
+        registerCommand(new SpawnCommand(plugin)); registerCommand(new DebugCommand(plugin));
     }
 
     @Override
