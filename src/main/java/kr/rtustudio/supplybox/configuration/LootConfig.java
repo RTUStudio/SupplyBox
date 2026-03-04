@@ -18,7 +18,6 @@ public class LootConfig {
 
     public LootConfig(SupplyBox plugin) {
         this.plugin = plugin;
-        reload();
     }
 
     public Loot get(String name) {
