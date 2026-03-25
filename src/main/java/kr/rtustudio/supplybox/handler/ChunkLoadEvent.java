@@ -1,7 +1,6 @@
-package kr.rtustudio.supplybox.listener;
+package kr.rtustudio.supplybox.handler;
 
 import kr.rtustudio.supplybox.SupplyBox;
-import kr.rtustudio.supplybox.box.Box;
 import kr.rtustudio.supplybox.box.BoxManager;
 import kr.rtustudio.supplybox.configuration.BoxConfig;
 import kr.rtustudio.supplybox.configuration.QueueConfig;
@@ -13,18 +12,18 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class ChunkLoadEvent extends RSListener<SupplyBox> {
 
-    private final BoxConfig boxConfig;
     private final QueueConfig queueConfig;
     private final BoxManager boxManager;
 
     public ChunkLoadEvent(SupplyBox plugin) {
         super(plugin);
-        this.boxConfig = plugin.getBoxConfig();
         this.queueConfig = plugin.getQueueConfig();
         this.boxManager = plugin.getBoxManager();
     }
@@ -34,25 +33,25 @@ public class ChunkLoadEvent extends RSListener<SupplyBox> {
         Chunk chunk = e.getChunk();
         UUID world = chunk.getWorld().getUID();
         Map<Long, String[]> map = queueConfig.get(world);
-        boolean queue = false;
+        long chunkKey = ((long) chunk.getZ() << 32) | (chunk.getX() & 0xFFFFFFFFL);
+        List<Long> toRemove = new ObjectArrayList<>();
         for (Map.Entry<Long, String[]> entry : map.entrySet()) {
             Long packed = entry.getKey();
-            String[] data = entry.getValue();
-            Box box = boxConfig.get(data[0]);
-            if (box == null) continue;
             BlockPos pos = new BlockPos(packed);
-            long chunkKey = ((long) chunk.getZ() << 32) | (chunk.getX() & 0xFFFFFFFFL);
-            if (pos.getChunkKey() == chunkKey) {
-                queueConfig.remove(world, packed);
-                queue = true;
-                int y;
-                if (pos.y() == null) {
-                    y = chunk.getWorld().getHighestBlockYAt(pos.x(), pos.z(), HeightMap.MOTION_BLOCKING_NO_LEAVES) + 1;
-                } else y = pos.y();
-                boxManager.setBlock(box, new Location(chunk.getWorld(), pos.x(), y, pos.z()), data[1]);
-            }
+            if (pos.getChunkKey() != chunkKey) continue;
+            String[] data = entry.getValue();
+            String boxName = data[0];
+            BoxConfig box = plugin.getBoxes().get(boxName);
+            if (box == null) continue;
+            toRemove.add(packed);
+            int y;
+            if (pos.y() == null) {
+                y = chunk.getWorld().getHighestBlockYAt(pos.x(), pos.z(), HeightMap.MOTION_BLOCKING_NO_LEAVES) + 1;
+            } else y = pos.y();
+            boxManager.setBlock(boxName, box, new Location(chunk.getWorld(), pos.x(), y, pos.z()), data[1]);
         }
-        if (queue) queueConfig.save();
+        for (Long packed : toRemove) queueConfig.remove(world, packed);
+        if (!toRemove.isEmpty()) queueConfig.save();
     }
 
 }

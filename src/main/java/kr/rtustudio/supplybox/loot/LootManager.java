@@ -1,10 +1,12 @@
 package kr.rtustudio.supplybox.loot;
 
 import kr.rtustudio.supplybox.SupplyBox;
+import kr.rtustudio.supplybox.configuration.LootConfig;
 import kr.rtustudio.framework.bukkit.api.registry.CustomItems;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.inventory.ItemStack;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -13,30 +15,31 @@ public class LootManager {
     private final SupplyBox plugin;
     private final Random random = new Random();
 
-    public List<ItemStack> getItems(Loot loot) {
-        List<ItemStack> items = new ArrayList<>();
-        if (loot.getList().isEmpty()) return items;
+    public List<ItemStack> getItems(LootConfig loot) {
+        List<LootConfig.Item> items = loot.getItemList();
+        if (items.isEmpty()) return new ObjectArrayList<>();
         int select = random.nextInt(loot.getSelectMax() - loot.getSelectMin() + 1) + loot.getSelectMin();
+        List<ItemStack> result = new ObjectArrayList<>();
         for (int i = 0; i < select; i++) {
-            ItemStack itemStack = getItem(loot.getList());
+            ItemStack itemStack = getItem(items);
             if (itemStack == null) continue;
-            items.add(itemStack);
+            result.add(itemStack);
         }
-        return items;
+        return result;
     }
 
-    public ItemStack getItem(List<Loot.Item> list) {
+    public ItemStack getItem(List<LootConfig.Item> list) {
         if (list.isEmpty()) return null;
         int totalWeight = 0;
-        NavigableMap<Integer, Loot.Item> map = new TreeMap<>();
-        for (Loot.Item item : list) {
+        NavigableMap<Integer, LootConfig.Item> map = new TreeMap<>();
+        for (LootConfig.Item item : list) {
             totalWeight += item.getWeight();
             map.put(totalWeight, item);
         }
         if (totalWeight <= 0) return null;
 
         int rand = random.nextInt(totalWeight) + 1;
-        Loot.Item item = map.ceilingEntry(rand).getValue();
+        LootConfig.Item item = map.ceilingEntry(rand).getValue();
 
         ItemStack itemStack = CustomItems.from(item.getItem());
         if (itemStack == null) return null;

@@ -1,18 +1,19 @@
-package kr.rtustudio.supplybox.listener;
+package kr.rtustudio.supplybox.handler;
 
 import kr.rtustudio.supplybox.SupplyBox;
-import kr.rtustudio.supplybox.box.Box;
 import kr.rtustudio.supplybox.box.BoxInventory;
+import kr.rtustudio.supplybox.box.BoxManager;
 import kr.rtustudio.supplybox.configuration.BoxConfig;
+import kr.rtustudio.supplybox.configuration.LootConfig;
 import kr.rtustudio.supplybox.loot.LootManager;
-import com.jeff_media.customblockdata.CustomBlockData;
+
 import kr.rtustudio.framework.bukkit.api.listener.RSListener;
-import kr.rtustudio.framework.bukkit.api.registry.CustomBlocks;
 import kr.rtustudio.framework.bukkit.api.registry.CustomItems;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.block.TileState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,7 +26,6 @@ import java.util.List;
 
 public class BoxInteractEvent extends RSListener<SupplyBox> {
 
-    private final BoxConfig boxConfig;
     private final LootManager lootManager;
 
     private final NamespacedKey key;
@@ -33,7 +33,6 @@ public class BoxInteractEvent extends RSListener<SupplyBox> {
 
     public BoxInteractEvent(SupplyBox plugin) {
         super(plugin);
-        this.boxConfig = plugin.getBoxConfig();
         this.lootManager = plugin.getLootManager();
 
         this.key = new NamespacedKey(plugin, "box");
@@ -45,7 +44,7 @@ public class BoxInteractEvent extends RSListener<SupplyBox> {
         Player player = e.getPlayer();
         Block block = e.getClickedBlock();
         if (block == null || block.getType().isAir()) return;
-        Box box = getBox(block);
+        BoxConfig box = getBox(block);
         if (box == null) return;
         if (!box.isEnabled()) return;
         e.setCancelled(true);
@@ -56,20 +55,22 @@ public class BoxInteractEvent extends RSListener<SupplyBox> {
             if (player.getInventory().containsAtLeast(key, 1)) {
                 player.getInventory().removeItem(key);
                 process(e.getPlayer(), block, box);
-            } else chat().announce(player, getMessage().get(player, "box.noKey"));
+            } else notifier.announce(player, message.get(player, "box.noKey"));
         }
     }
 
-    private void process(Player player, Block block, Box box) {
+    private void process(Player player, Block block, BoxConfig box) {
         removeBlock(block);
-        List<ItemStack> items = lootManager.getItems(box.getLoot());
-        switch (box.getInteract()) {
+        LootConfig loot = plugin.getLoots().get(box.getLoot());
+        if (loot == null) return;
+        List<ItemStack> items = lootManager.getItems(loot);
+        switch (box.getInteractType()) {
             case DROP -> {
                 Location loc = block.getLocation();
                 for (ItemStack itemStack : items) loc.getWorld().dropItem(loc, itemStack);
             }
             case INVENTORY -> {
-                BoxInventory inventory = new BoxInventory(getPlugin(), box, items);
+                BoxInventory inventory = new BoxInventory(plugin, box, items);
                 player.openInventory(inventory.getInventory());
             }
             case GIVE -> {
@@ -83,7 +84,8 @@ public class BoxInteractEvent extends RSListener<SupplyBox> {
     }
 
     private void removeBlock(Block block) {
-        PersistentDataContainer pdc = new CustomBlockData(block, getPlugin());
+        if (!(block.getState() instanceof TileState ts)) return;
+        PersistentDataContainer pdc = ts.getPersistentDataContainer();
         String scheduleName = null;
         if (pdc.has(scheduleKey, PersistentDataType.STRING)) {
             scheduleName = pdc.get(scheduleKey, PersistentDataType.STRING);
@@ -92,19 +94,23 @@ public class BoxInteractEvent extends RSListener<SupplyBox> {
         if (pdc.has(key, PersistentDataType.STRING)) {
             pdc.remove(key);
         }
+        ts.update();
         block.setType(Material.AIR);
         if (scheduleName != null) {
-            getPlugin().getBoxManager().onBoxOpened(scheduleName, block.getLocation());
+            plugin.getBoxManager().untrackScheduleBox(block.getWorld(), scheduleName);
+            plugin.getBoxManager().onBoxOpened(scheduleName, block.getLocation());
         }
     }
 
-    private Box getBox(Block block) {
-        PersistentDataContainer pdc = new CustomBlockData(block, getPlugin());
+    private BoxConfig getBox(Block block) {
+        if (!(block.getState() instanceof TileState ts)) return null;
+        PersistentDataContainer pdc = ts.getPersistentDataContainer();
         if (pdc.has(key, PersistentDataType.STRING)) {
             String boxName = pdc.get(key, PersistentDataType.STRING);
-            Box box = boxConfig.get(boxName);
+            BoxConfig box = plugin.getBoxes().get(boxName);
             if (box == null) {
                 pdc.remove(key);
+                ts.update();
                 return null;
             }
             return box;

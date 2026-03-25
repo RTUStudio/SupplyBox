@@ -3,7 +3,7 @@ package kr.rtustudio.supplybox.configuration;
 import kr.rtustudio.configurate.objectmapping.ConfigSerializable;
 import kr.rtustudio.configurate.objectmapping.meta.Comment;
 import kr.rtustudio.configurate.objectmapping.meta.Setting;
-import kr.rtustudio.framework.bukkit.api.configuration.ConfigurationPart;
+import kr.rtustudio.configurate.model.ConfigurationPart;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,9 +15,6 @@ import java.util.Map;
 @SuppressWarnings({"unused", "FieldMayBeFinal"})
 public class ScheduleConfig extends ConfigurationPart {
 
-    @Comment("""
-            Schedule list
-            스케줄 목록. 키=스케줄 이름""")
     @Setting(nodeFromParent = true)
     private Map<String, Entry> schedules = new LinkedHashMap<>(Map.of(
             "Example", new Entry(

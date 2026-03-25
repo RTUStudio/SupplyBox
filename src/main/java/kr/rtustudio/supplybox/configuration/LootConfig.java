@@ -1,81 +1,70 @@
 package kr.rtustudio.supplybox.configuration;
 
-import com.google.common.io.Files;
-import kr.rtustudio.framework.bukkit.api.configuration.RSConfiguration;
-import kr.rtustudio.framework.bukkit.api.platform.FileResource;
-import kr.rtustudio.supplybox.SupplyBox;
-import kr.rtustudio.supplybox.loot.Loot;
+import kr.rtustudio.configurate.objectmapping.ConfigSerializable;
+import kr.rtustudio.configurate.objectmapping.meta.Comment;
+import kr.rtustudio.configurate.model.ConfigurationPart;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.io.File;
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings({"FieldMayBeFinal", "unused"})
-public class LootConfig {
+@Getter
+@SuppressWarnings({"unused", "CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "InnerClassMayBeStatic"})
+public class LootConfig extends ConfigurationPart {
 
-    private final Map<String, Loot> map = new HashMap<>();
-    private final SupplyBox plugin;
+    private Select select;
+    private Map<String, Item> items = new LinkedHashMap<>();
 
-    public LootConfig(SupplyBox plugin) {
-        this.plugin = plugin;
+    public int getSelectMin() {
+        return select != null ? select.min : 2;
     }
 
-    public Loot get(String name) {
-        return map.get(name);
+    public int getSelectMax() {
+        return select != null ? select.max : 2;
     }
 
-    public Map<String, Loot> getMap() {
-        return map;
+    public List<Item> getItemList() {
+        return new ObjectArrayList<>(items.values());
     }
 
-    public void reload() {
-        map.clear();
-        if (!new File(plugin.getDataFolder() + "/Configs/Loots/").exists())
-            FileResource.createFileCopy(plugin, "Configs/Loots", "Example.yml");
-        File[] files = FileResource.createFolder(plugin.getDataFolder() + "/Configs/Loots").listFiles();
-        if (files == null) return;
-        for (File file : files) {
-            String name = file.getName();
-            if (!name.endsWith(".yml")) continue;
-            new Config(name);
-        }
+    public int getTotalWeight() {
+        int total = 0;
+        for (Item item : items.values()) total += item.weight;
+        return total;
     }
 
-    class Config extends RSConfiguration.Wrapper<SupplyBox> {
+    @Getter
+    @NoArgsConstructor
+    @ConfigSerializable
+    @SuppressWarnings({"unused", "FieldMayBeFinal"})
+    public static class Select {
+        private int min = 2;
+        private int max = 2;
+    }
 
-        private final String id;
-
-        public Config(String name) {
-            super(plugin, "Configs/Loots", name, null);
-            this.id = Files.getNameWithoutExtension(name);
-            setup(this);
-        }
-
-        private void init() {
-            Loot loot = new Loot(id);
-            loot.setSelectMin(getInt("select.min", 2, """
-                    Minimum number of items to select
-                    선택 최소 아이템 수"""));
-            loot.setSelectMax(getInt("select.max", 2, """
-                    Maximum number of items to select
-                    선택 최대 아이템 수"""));
-            
-            var itemKeys = getConfig().node("items").childrenMap().keySet();
-            for (Object obj : itemKeys) {
-                String key = String.valueOf(obj);
-                Loot.Item item = new Loot.Item(key);
-                item.setWeight(getInt("items." + key + ".weight", 100, """
-                        Weighted chance (higher = more likely)
-                        가중치 (높을수록 확률 증가)"""));
-                item.setMin(getInt("items." + key + ".min", 1, """
-                        Minimum amount
-                        최소 수량"""));
-                item.setMax(getInt("items." + key + ".max", 64, """
-                        Maximum amount
-                        최대 수량"""));
-                loot.addItem(item);
-            }
-            map.put(id, loot);
-        }
+    @Getter
+    @NoArgsConstructor
+    @ConfigSerializable
+    @SuppressWarnings({"unused", "FieldMayBeFinal"})
+    public static class Item {
+        @Comment("""
+                Custom item identifier
+                커스텀 아이템 식별자""")
+        private String item = "";
+        @Comment("""
+                Weighted chance (higher = more likely)
+                가중치 (높을수록 확률 증가)""")
+        private int weight = 100;
+        @Comment("""
+                Minimum amount
+                최소 수량""")
+        private int min = 1;
+        @Comment("""
+                Maximum amount
+                최대 수량""")
+        private int max = 64;
     }
 }

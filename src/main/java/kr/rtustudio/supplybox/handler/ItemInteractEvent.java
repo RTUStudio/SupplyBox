@@ -1,9 +1,9 @@
-package kr.rtustudio.supplybox.listener;
+package kr.rtustudio.supplybox.handler;
 
 import kr.rtustudio.supplybox.SupplyBox;
-import kr.rtustudio.supplybox.box.Box;
 import kr.rtustudio.supplybox.box.BoxInventory;
 import kr.rtustudio.supplybox.configuration.BoxConfig;
+import kr.rtustudio.supplybox.configuration.LootConfig;
 import kr.rtustudio.supplybox.loot.LootManager;
 import kr.rtustudio.framework.bukkit.api.listener.RSListener;
 import kr.rtustudio.framework.bukkit.api.registry.CustomItems;
@@ -14,15 +14,14 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Map;
 
 public class ItemInteractEvent extends RSListener<SupplyBox> {
 
-    private final BoxConfig boxConfig;
     private final LootManager lootManager;
 
     public ItemInteractEvent(SupplyBox plugin) {
         super(plugin);
-        this.boxConfig = plugin.getBoxConfig();
         this.lootManager = plugin.getLootManager();
     }
 
@@ -33,7 +32,8 @@ public class ItemInteractEvent extends RSListener<SupplyBox> {
         ItemStack item = e.getItem();
         if (item == null || item.getType().isAir()) return;
         Player player = e.getPlayer();
-        for (Box box : boxConfig.getMap().values()) {
+        for (Map.Entry<String, BoxConfig> entry : plugin.getBoxes().asMap().entrySet()) {
+            BoxConfig box = entry.getValue();
             ItemStack boxItem = CustomItems.from(box.getItemBox());
             if (boxItem == null) continue;
             if (CustomItems.isSimilar(e.getItem(), boxItem)) {
@@ -47,21 +47,23 @@ public class ItemInteractEvent extends RSListener<SupplyBox> {
                         player.getInventory().removeItem(key);
                         item.setAmount(item.getAmount() - 1);
                         process(e.getPlayer(), box);
-                    } else chat().announce(player, getMessage().get(player, "box.noKey"));
+                    } else notifier.announce(player, message.get(player, "box.noKey"));
                     return;
                 }
             }
         }
     }
 
-    private void process(Player player, Box box) {
-        List<ItemStack> items = lootManager.getItems(box.getLoot());
-        switch (box.getInteract()) {
+    private void process(Player player, BoxConfig box) {
+        LootConfig loot = plugin.getLoots().get(box.getLoot());
+        if (loot == null) return;
+        List<ItemStack> items = lootManager.getItems(loot);
+        switch (box.getInteractType()) {
             case DROP -> {
                 for (ItemStack itemStack : items) player.getWorld().dropItem(player.getLocation(), itemStack);
             }
             case INVENTORY -> {
-                BoxInventory inventory = new BoxInventory(getPlugin(), box, items);
+                BoxInventory inventory = new BoxInventory(plugin, box, items);
                 player.openInventory(inventory.getInventory());
             }
             case GIVE -> {

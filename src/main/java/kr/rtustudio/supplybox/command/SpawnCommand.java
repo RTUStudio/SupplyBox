@@ -1,56 +1,52 @@
 package kr.rtustudio.supplybox.command;
 
 import kr.rtustudio.supplybox.SupplyBox;
-import kr.rtustudio.supplybox.box.Box;
 import kr.rtustudio.supplybox.box.BoxManager;
 import kr.rtustudio.supplybox.configuration.BoxConfig;
 import kr.rtustudio.supplybox.configuration.ProfileConfig;
-import kr.rtustudio.supplybox.profile.Profile;
 import kr.rtustudio.framework.bukkit.api.command.RSCommand;
-import kr.rtustudio.framework.bukkit.api.command.RSCommandData;
+import kr.rtustudio.framework.bukkit.api.command.CommandArgs;
+import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;
 
 public class SpawnCommand extends RSCommand<SupplyBox> {
-
-    private final BoxConfig boxConfig;
-    private final ProfileConfig profileConfig;
 
     private final BoxManager boxManager;
 
     public SpawnCommand(SupplyBox plugin) {
         super(plugin, "spawn");
-        this.boxConfig = plugin.getBoxConfig();
-        this.profileConfig = plugin.getProfileConfig();
         this.boxManager = plugin.getBoxManager();
     }
 
     @Override
-    protected Result execute(RSCommandData data) {
+    protected Result execute(CommandArgs data) {
         if (data.isEmpty()) return Result.WRONG_USAGE;
-        Box box = boxConfig.get(data.args(1));
+        String boxName = data.get(1);
+        BoxConfig box = plugin.getBoxes().get(boxName);
         if (box == null) {
-            chat().announce(audience(), message().get(player(), "notFound.box"));
+            notifier.announce(getAudience(), message.get((Player) getSender(), "notFound.box"));
             return Result.FAILURE;
         }
-        Profile profile = profileConfig.get(data.args(2));
+        String profileName = data.get(2);
+        ProfileConfig profile = plugin.getProfiles().get(profileName);
         if (profile == null) {
-            chat().announce(audience(), message().get(player(), "notFound.profile"));
+            notifier.announce(getAudience(), message.get((Player) getSender(), "notFound.profile"));
             return Result.FAILURE;
         }
-        boxManager.spawn(box, profile);
+        boxManager.spawn(boxName, box, profile);
         return Result.SUCCESS;
     }
 
     @Override
-    public List<String> tabComplete(RSCommandData data) {
-        List<String> list = new ArrayList<>();
+    public List<String> tabComplete(CommandArgs data) {
+        List<String> list = new ObjectArrayList<>();
         if (data.length(2)) {
-            list.addAll(boxConfig.getMap().keySet());
+            list.addAll(plugin.getBoxes().keys());
         }
         if (data.length(3)) {
-            list.addAll(profileConfig.getMap().keySet());
+            list.addAll(plugin.getProfiles().keys());
         }
         return list;
     }

@@ -1,15 +1,15 @@
 package kr.rtustudio.supplybox.schedule;
 
 import kr.rtustudio.supplybox.SupplyBox;
-import kr.rtustudio.supplybox.box.Box;
 import kr.rtustudio.supplybox.box.BoxManager;
+import kr.rtustudio.supplybox.configuration.BoxConfig;
+import kr.rtustudio.supplybox.configuration.ProfileConfig;
 import kr.rtustudio.supplybox.configuration.ScheduleConfig;
 import kr.rtustudio.supplybox.configuration.ScheduleConfig.Entry;
-import kr.rtustudio.supplybox.profile.Profile;
 import kr.rtustudio.framework.bukkit.api.core.scheduler.ScheduledTask;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,8 +18,8 @@ public class ScheduleManager {
     private final SupplyBox plugin;
     private final BoxManager boxManager;
 
-    private final Map<String, ScheduledTask> tasks = new HashMap<>();
-    private final Set<String> waitingForOpen = new HashSet<>();
+    private final Map<String, ScheduledTask> tasks = new Object2ObjectOpenHashMap<>();
+    private final Set<String> waitingForOpen = new ObjectOpenHashSet<>();
 
     public ScheduleManager(SupplyBox plugin) {
         this.plugin = plugin;
@@ -51,6 +51,10 @@ public class ScheduleManager {
             String name = ent.getKey();
             Entry entry = ent.getValue();
             if (!entry.isEnabled()) continue;
+            if (entry.isDelayPerChest() && boxManager.hasActiveScheduleBoxes(name)) {
+                waitingForOpen.add(name);
+                continue;
+            }
             startSchedule(name, entry);
         }
     }
@@ -59,7 +63,6 @@ public class ScheduleManager {
         tasks.values().forEach(ScheduledTask::cancel);
         tasks.clear();
         waitingForOpen.clear();
-        boxManager.clearScheduleTracking();
     }
 
     private void startSchedule(String name, Entry entry) {
@@ -79,10 +82,11 @@ public class ScheduleManager {
     }
 
     private void executeSpawn(String name, Entry entry) {
-        Box box = plugin.getBoxConfig().get(entry.getBox());
-        Profile profile = plugin.getProfileConfig().get(entry.getProfile());
+        String boxName = entry.getBox();
+        BoxConfig box = plugin.getBoxes().get(boxName);
+        ProfileConfig profile = plugin.getProfiles().get(entry.getProfile());
         if (box != null && box.isEnabled() && profile != null) {
-            boxManager.spawn(box, profile, entry.isDelayPerChest() ? name : null);
+            boxManager.spawn(boxName, box, profile, entry.isDelayPerChest() ? name : null);
         }
     }
 
@@ -92,12 +96,13 @@ public class ScheduleManager {
         Entry entry = scheduleConfig.getSchedules().get(scheduleName);
         if (entry == null || !entry.isEnabled() || !entry.isDelayPerChest()) return;
 
-        Box box = plugin.getBoxConfig().get(entry.getBox());
+        String boxName = entry.getBox();
+        BoxConfig box = plugin.getBoxes().get(boxName);
         if (box == null || !box.isEnabled()) return;
 
         long delay = Math.max(1L, entry.getPeriod()) * 20L;
         plugin.getFramework().getScheduler().delay(() -> {
-            boxManager.setBlock(box, loc, scheduleName);
+            boxManager.setBlock(boxName, box, loc, scheduleName);
         }, delay, true);
     }
 }

@@ -1,17 +1,13 @@
 enabled: false
-
-displayName: "<gray>Example</gray>"
-
+display-name: "<gray>Example</gray>"
 alert:
   minecraft: true
   discord: false
-
 # nexo:id
 # itemsadder:namespace:id
 # oraxen:id
 # minecraft:block
 block: "minecraft:chest"
-
 # nexo:id
 # itemsadder:namespace:id
 # oraxen:id
@@ -21,9 +17,6 @@ block: "minecraft:chest"
 item:
   box: "minecraft:chest"
   key: "minecraft:trial_key"
-
 # drop / inventory / give
 interact: "inventory"
-
 loot: "Example"
-
