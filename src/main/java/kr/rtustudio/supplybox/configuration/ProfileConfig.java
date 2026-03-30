@@ -1,15 +1,19 @@
 package kr.rtustudio.supplybox.configuration;
 
-import kr.rtustudio.configurate.objectmapping.ConfigSerializable;
-import kr.rtustudio.configurate.objectmapping.meta.Comment;
 import kr.rtustudio.configurate.model.ConfigurationPart;
+import kr.rtustudio.configurate.objectmapping.meta.Comment;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
-@SuppressWarnings({"unused", "CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "InnerClassMayBeStatic"})
+@SuppressWarnings({
+        "unused",
+        "CanBeFinal",
+        "FieldCanBeLocal",
+        "FieldMayBeFinal",
+        "InnerClassMayBeStatic"
+})
 public class ProfileConfig extends ConfigurationPart {
 
     private Location location;
@@ -57,7 +61,6 @@ public class ProfileConfig extends ConfigurationPart {
                 Radius of the region
                 영역 반지름""")
         private int radius = 100;
-        @Getter
         @Comment("""
                 Region shape: SQUARE or CIRCLE
                 영역 형태""")
@@ -68,7 +71,7 @@ public class ProfileConfig extends ConfigurationPart {
                 스폰 시 생성할 지점 수""")
         private int amount = 1;
 
-        public Type getRegionType() {
+        public Type getType() {
             String normalized = type.toUpperCase();
             if (!List.of("SQUARE", "CIRCLE").contains(normalized)) return Type.SQUARE;
             return Type.valueOf(normalized);

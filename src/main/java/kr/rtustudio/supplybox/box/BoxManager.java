@@ -1,38 +1,36 @@
 package kr.rtustudio.supplybox.box;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import kr.rtustudio.framework.bukkit.api.configuration.internal.translation.TranslationConfiguration;
+import kr.rtustudio.framework.bukkit.api.core.scheduler.Scheduler;
+import kr.rtustudio.framework.bukkit.api.format.ComponentFormatter;
+import kr.rtustudio.framework.bukkit.api.registry.CustomBlocks;
 import kr.rtustudio.supplybox.SupplyBox;
-import kr.rtustudio.supplybox.configuration.BoxConfig;
-import kr.rtustudio.supplybox.configuration.DiscordConfig;
-import kr.rtustudio.supplybox.configuration.LootConfig;
-import kr.rtustudio.supplybox.configuration.ProfileConfig;
-import kr.rtustudio.supplybox.configuration.QueueConfig;
+import kr.rtustudio.supplybox.configuration.*;
 import kr.rtustudio.supplybox.data.BlockPos;
 import kr.rtustudio.supplybox.data.WorldCoordinate;
-
-import kr.rtustudio.framework.bukkit.api.configuration.internal.translation.TranslationConfiguration;
-import kr.rtustudio.framework.bukkit.api.format.ComponentFormatter;
-
-import kr.rtustudio.framework.bukkit.api.registry.CustomBlocks;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.TileState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.BiConsumer;
 
 public class BoxManager {
 
     private final SupplyBox plugin;
 
     private final QueueConfig queueConfig;
+    private final Scheduler scheduler;
 
     private final NamespacedKey key;
     private final NamespacedKey scheduleKey;
@@ -40,18 +38,19 @@ public class BoxManager {
     private final TranslationConfiguration translation;
 
     private final Set<String> activeSchedules = new ObjectOpenHashSet<>();
-    private java.util.function.BiConsumer<String, Location> boxOpenedCallback;
+    private BiConsumer<String, Location> openCallback;
 
     public BoxManager(SupplyBox plugin) {
         this.plugin = plugin;
         this.queueConfig = plugin.getQueueConfig();
+        this.scheduler = plugin.getFramework().getScheduler();
         this.key = new NamespacedKey(plugin, "box");
         this.scheduleKey = new NamespacedKey(plugin, "schedule");
         this.translation = plugin.getConfiguration().getMessage();
     }
 
-    public void setBoxOpenedCallback(java.util.function.BiConsumer<String, Location> callback) {
-        this.boxOpenedCallback = callback;
+    public void setOpenCallback(BiConsumer<String, Location> callback) {
+        this.openCallback = callback;
     }
 
     public void spawn(String boxName, BoxConfig box, ProfileConfig profile) {
@@ -105,11 +104,12 @@ public class BoxManager {
                             int z = Integer.parseInt(split[3].trim());
                             parsed.add(new WorldCoordinate(split[0].trim(), new BlockPos(x, y, z)));
                         }
-                    } catch (NumberFormatException ignored) {}
+                    } catch (NumberFormatException ignored) {
+                    }
                 }
                 int select = loc.getSelect();
                 if (parsed.size() <= select) return parsed;
-                List<Integer> indexes = new Random().ints(select, 0, parsed.size())
+                List<Integer> indexes = ThreadLocalRandom.current().ints(select, 0, parsed.size())
                         .distinct().boxed().toList();
                 List<WorldCoordinate> selected = new ObjectArrayList<>();
                 for (Integer index : indexes) selected.add(parsed.get(index));
@@ -118,7 +118,7 @@ public class BoxManager {
                 ProfileConfig.Region reg = profile.getRegion();
                 int amount = reg.getAmount();
                 List<WorldCoordinate> result = new ObjectArrayList<>();
-                switch (reg.getRegionType()) {
+                switch (reg.getType()) {
                     case CIRCLE -> {
                         for (int i = 0; i < amount; i++) {
                             double a = Math.random() * 2 * Math.PI;
@@ -129,7 +129,7 @@ public class BoxManager {
                         }
                     }
                     case SQUARE -> {
-                        Random random = new Random();
+                        ThreadLocalRandom random = ThreadLocalRandom.current();
                         for (int i = 0; i < amount; i++) {
                             int x = random.nextInt(reg.getRadius() * 2) - reg.getRadius();
                             int z = random.nextInt(reg.getRadius() * 2) - reg.getRadius();
@@ -152,16 +152,16 @@ public class BoxManager {
         if (blockData == null) blockData = Material.CHEST.createBlockData();
         if (Bukkit.getWorld(loc.getWorld().getUID()) == null) return;
         BlockData copy = blockData;
-        plugin.getFramework().getScheduler().sync(loc, () -> {
+        scheduler.sync(loc, () -> {
             Block block = loc.getWorld().getBlockAt(loc);
             block.setBlockData(copy);
-            if (block.getState() instanceof org.bukkit.block.TileState ts) {
+            if (block.getState() instanceof TileState ts) {
                 PersistentDataContainer pdc = ts.getPersistentDataContainer();
                 pdc.set(key, PersistentDataType.STRING, boxName);
                 if (scheduleName != null) {
                     pdc.set(scheduleKey, PersistentDataType.STRING, scheduleName);
                     PersistentDataContainer worldPdc = loc.getWorld().getPersistentDataContainer();
-                    NamespacedKey countKey = scheduleCountKey(scheduleName);
+                    NamespacedKey countKey = countKey(scheduleName);
                     int current = worldPdc.getOrDefault(countKey, PersistentDataType.INTEGER, 0);
                     worldPdc.set(countKey, PersistentDataType.INTEGER, current + 1);
                 }
@@ -175,8 +175,8 @@ public class BoxManager {
 
     public void onBoxOpened(String scheduleName, Location loc) {
         if (scheduleName == null) return;
-        if (boxOpenedCallback != null) {
-            boxOpenedCallback.accept(scheduleName, loc);
+        if (openCallback != null) {
+            openCallback.accept(scheduleName, loc);
         }
     }
 
@@ -184,12 +184,12 @@ public class BoxManager {
         return scheduleKey;
     }
 
-    public void loadScheduleBoxes() {
+    public void loadSchedules() {
         activeSchedules.clear();
-        kr.rtustudio.supplybox.configuration.ScheduleConfig config = plugin.getConfiguration(kr.rtustudio.supplybox.configuration.ScheduleConfig.class);
+        ScheduleConfig config = plugin.getConfiguration(ScheduleConfig.class);
         if (config == null) return;
         for (String name : config.getSchedules().keySet()) {
-            NamespacedKey countKey = scheduleCountKey(name);
+            NamespacedKey countKey = countKey(name);
             for (World world : Bukkit.getWorlds()) {
                 Integer count = world.getPersistentDataContainer()
                         .get(countKey, PersistentDataType.INTEGER);
@@ -201,12 +201,12 @@ public class BoxManager {
         }
     }
 
-    public boolean hasActiveScheduleBoxes(String scheduleName) {
+    public boolean hasActive(String scheduleName) {
         return activeSchedules.contains(scheduleName);
     }
 
-    public void untrackScheduleBox(World world, String scheduleName) {
-        NamespacedKey countKey = scheduleCountKey(scheduleName);
+    public void untrack(World world, String scheduleName) {
+        NamespacedKey countKey = countKey(scheduleName);
         PersistentDataContainer worldPdc = world.getPersistentDataContainer();
         int current = worldPdc.getOrDefault(countKey, PersistentDataType.INTEGER, 0);
         if (current <= 1) {
@@ -216,11 +216,11 @@ public class BoxManager {
         }
     }
 
-    private NamespacedKey scheduleCountKey(String scheduleName) {
+    private NamespacedKey countKey(String scheduleName) {
         return new NamespacedKey(plugin, "sched_" + scheduleName.toLowerCase().replaceAll("[^a-z0-9._-]", "_"));
     }
 
-    private String formatMessage(String template, String boxName, String display, WorldCoordinate pos) {
+    private String format(String template, String boxName, String display, WorldCoordinate pos) {
         return template
                 .replace("[display]", display)
                 .replace("[name]", boxName)
@@ -233,7 +233,7 @@ public class BoxManager {
     private void alert(String boxName, BoxConfig box, WorldCoordinate pos) {
         if (box.isAlertMinecraft()) {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                String message = formatMessage(translation.get(player, "box.spawn"), boxName, box.getDisplayName(), pos);
+                String message = format(translation.get(player, "box.spawn"), boxName, box.getDisplayName(), pos);
                 player.sendMessage(ComponentFormatter.mini(message));
             }
         }
@@ -242,7 +242,7 @@ public class BoxManager {
             DiscordConfig discordConfig = plugin.getConfiguration(DiscordConfig.class);
             if (discordConfig != null && !discordConfig.getMessage().isEmpty()) {
                 String display = PlainTextComponentSerializer.plainText().serialize(ComponentFormatter.mini(box.getDisplayName()));
-                String discordMessage = formatMessage(discordConfig.getMessage(), boxName, display, pos);
+                String discordMessage = format(discordConfig.getMessage(), boxName, display, pos);
                 plugin.getDiscord().sendMessage(discordMessage);
             }
         }

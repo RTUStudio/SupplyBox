@@ -1,18 +1,23 @@
 package kr.rtustudio.supplybox.configuration;
 
-import kr.rtustudio.configurate.objectmapping.ConfigSerializable;
-import kr.rtustudio.configurate.objectmapping.meta.Comment;
 import kr.rtustudio.configurate.model.ConfigurationPart;
+import kr.rtustudio.configurate.objectmapping.meta.Comment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 @Getter
-@SuppressWarnings({"unused", "CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "InnerClassMayBeStatic"})
+@SuppressWarnings({
+        "unused",
+        "CanBeFinal",
+        "FieldCanBeLocal",
+        "FieldMayBeFinal",
+        "InnerClassMayBeStatic"
+})
 public class LootConfig extends ConfigurationPart {
 
     private Select select;
@@ -26,8 +31,8 @@ public class LootConfig extends ConfigurationPart {
         return select != null ? select.max : 2;
     }
 
-    public List<Item> getItemList() {
-        return new ObjectArrayList<>(items.values());
+    public List<Item> toList() {
+        return new ArrayList<>(items.values());
     }
 
     public int getTotalWeight() {
@@ -38,18 +43,28 @@ public class LootConfig extends ConfigurationPart {
 
     @Getter
     @NoArgsConstructor
-    @ConfigSerializable
-    @SuppressWarnings({"unused", "FieldMayBeFinal"})
-    public static class Select {
+    @SuppressWarnings({
+            "unused",
+            "CanBeFinal",
+            "FieldCanBeLocal",
+            "FieldMayBeFinal",
+            "InnerClassMayBeStatic"
+    })
+    public class Select extends ConfigurationPart {
         private int min = 2;
         private int max = 2;
     }
 
     @Getter
     @NoArgsConstructor
-    @ConfigSerializable
-    @SuppressWarnings({"unused", "FieldMayBeFinal"})
-    public static class Item {
+    @SuppressWarnings({
+            "unused",
+            "CanBeFinal",
+            "FieldCanBeLocal",
+            "FieldMayBeFinal",
+            "InnerClassMayBeStatic"
+    })
+    public class Item extends ConfigurationPart {
         @Comment("""
                 Custom item identifier
                 커스텀 아이템 식별자""")

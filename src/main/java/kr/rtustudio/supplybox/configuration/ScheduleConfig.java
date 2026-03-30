@@ -1,9 +1,8 @@
 package kr.rtustudio.supplybox.configuration;
 
-import kr.rtustudio.configurate.objectmapping.ConfigSerializable;
+import kr.rtustudio.configurate.model.ConfigurationPart;
 import kr.rtustudio.configurate.objectmapping.meta.Comment;
 import kr.rtustudio.configurate.objectmapping.meta.Setting;
-import kr.rtustudio.configurate.model.ConfigurationPart;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Getter
-@SuppressWarnings({"unused", "FieldMayBeFinal"})
+@SuppressWarnings({
+        "unused",
+        "CanBeFinal",
+        "FieldCanBeLocal",
+        "FieldMayBeFinal",
+        "InnerClassMayBeStatic"
+})
 public class ScheduleConfig extends ConfigurationPart {
 
     @Setting(nodeFromParent = true)
@@ -29,9 +34,14 @@ public class ScheduleConfig extends ConfigurationPart {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    @ConfigSerializable
-    @SuppressWarnings({"unused", "FieldMayBeFinal"})
-    public static class Entry {
+    @SuppressWarnings({
+            "unused",
+            "CanBeFinal",
+            "FieldCanBeLocal",
+            "FieldMayBeFinal",
+            "InnerClassMayBeStatic"
+    })
+    public class Entry extends ConfigurationPart {
         @Comment("""
                 Whether the schedule is enabled
                 스케줄 활성화 여부""")

@@ -1,7 +1,9 @@
 supplybox:
   name: "supplybox"
-  command:
+  description: "Supply box management command."
+  usage: "/supplybox"
+  commands:
     spawn:
       name: "spawn"
-      description: "Spawn random box"
+      description: "Spawns a random box."
       usage: "/supplybox spawn [box] [profile]"

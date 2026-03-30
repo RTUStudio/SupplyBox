@@ -1,10 +1,10 @@
 package kr.rtustudio.supplybox.box;
 
+import kr.rtustudio.framework.bukkit.api.format.ComponentFormatter;
+import kr.rtustudio.framework.bukkit.api.inventory.RSInventory;
 import kr.rtustudio.supplybox.SupplyBox;
 import kr.rtustudio.supplybox.configuration.BoxConfig;
 import kr.rtustudio.supplybox.configuration.LootConfig;
-import kr.rtustudio.framework.bukkit.api.format.ComponentFormatter;
-import kr.rtustudio.framework.bukkit.api.inventory.RSInventory;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

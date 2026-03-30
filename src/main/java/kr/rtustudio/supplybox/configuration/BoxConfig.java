@@ -1,13 +1,19 @@
 package kr.rtustudio.supplybox.configuration;
 
-import kr.rtustudio.configurate.objectmapping.meta.Comment;
 import kr.rtustudio.configurate.model.ConfigurationPart;
+import kr.rtustudio.configurate.objectmapping.meta.Comment;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-@SuppressWarnings({"unused", "CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "InnerClassMayBeStatic"})
+@SuppressWarnings({
+        "unused",
+        "CanBeFinal",
+        "FieldCanBeLocal",
+        "FieldMayBeFinal",
+        "InnerClassMayBeStatic"
+})
 public class BoxConfig extends ConfigurationPart {
 
     @Comment("""
@@ -55,7 +61,7 @@ public class BoxConfig extends ConfigurationPart {
         return item != null ? item.key : "";
     }
 
-    public Interact getInteractType() {
+    public Interact getInteract() {
         String normalized = interact.toUpperCase();
         if (!List.of("DROP", "INVENTORY", "GIVE").contains(normalized)) return Interact.DROP;
         return Interact.valueOf(normalized);

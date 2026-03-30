@@ -1,15 +1,17 @@
 package kr.rtustudio.supplybox.schedule;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import kr.rtustudio.framework.bukkit.api.core.scheduler.ScheduledTask;
+import kr.rtustudio.framework.bukkit.api.core.scheduler.Scheduler;
 import kr.rtustudio.supplybox.SupplyBox;
 import kr.rtustudio.supplybox.box.BoxManager;
 import kr.rtustudio.supplybox.configuration.BoxConfig;
 import kr.rtustudio.supplybox.configuration.ProfileConfig;
 import kr.rtustudio.supplybox.configuration.ScheduleConfig;
 import kr.rtustudio.supplybox.configuration.ScheduleConfig.Entry;
-import kr.rtustudio.framework.bukkit.api.core.scheduler.ScheduledTask;
+import org.bukkit.Location;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,6 +19,7 @@ public class ScheduleManager {
 
     private final SupplyBox plugin;
     private final BoxManager boxManager;
+    private final Scheduler scheduler;
 
     private final Map<String, ScheduledTask> tasks = new Object2ObjectOpenHashMap<>();
     private final Set<String> waitingForOpen = new ObjectOpenHashSet<>();
@@ -24,7 +27,8 @@ public class ScheduleManager {
     public ScheduleManager(SupplyBox plugin) {
         this.plugin = plugin;
         this.boxManager = plugin.getBoxManager();
-        this.boxManager.setBoxOpenedCallback(this::onBoxOpened);
+        this.scheduler = plugin.getFramework().getScheduler();
+        this.boxManager.setOpenCallback(this::onBoxOpened);
     }
 
     public boolean add(String name) {
@@ -51,7 +55,7 @@ public class ScheduleManager {
             String name = ent.getKey();
             Entry entry = ent.getValue();
             if (!entry.isEnabled()) continue;
-            if (entry.isDelayPerChest() && boxManager.hasActiveScheduleBoxes(name)) {
+            if (entry.isDelayPerChest() && boxManager.hasActive(name)) {
                 waitingForOpen.add(name);
                 continue;
             }
@@ -68,14 +72,14 @@ public class ScheduleManager {
     private void startSchedule(String name, Entry entry) {
         long delay = Math.max(1L, entry.getPeriod()) * 20L;
         if (entry.isDelayPerChest()) {
-            ScheduledTask task = plugin.getFramework().getScheduler().delay(() -> {
+            ScheduledTask task = scheduler.delay(() -> {
                 tasks.remove(name);
                 executeSpawn(name, entry);
                 waitingForOpen.add(name);
             }, delay, true);
             tasks.put(name, task);
         } else {
-            ScheduledTask task = plugin.getFramework().getScheduler().repeat(
+            ScheduledTask task = scheduler.repeat(
                     () -> executeSpawn(name, entry), delay, true);
             tasks.put(name, task);
         }
@@ -90,7 +94,7 @@ public class ScheduleManager {
         }
     }
 
-    private void onBoxOpened(String scheduleName, org.bukkit.Location loc) {
+    private void onBoxOpened(String scheduleName, Location loc) {
         ScheduleConfig scheduleConfig = plugin.getConfiguration(ScheduleConfig.class);
         if (scheduleConfig == null) return;
         Entry entry = scheduleConfig.getSchedules().get(scheduleName);
@@ -101,7 +105,7 @@ public class ScheduleManager {
         if (box == null || !box.isEnabled()) return;
 
         long delay = Math.max(1L, entry.getPeriod()) * 20L;
-        plugin.getFramework().getScheduler().delay(() -> {
+        scheduler.delay(() -> {
             boxManager.setBlock(boxName, box, loc, scheduleName);
         }, delay, true);
     }
